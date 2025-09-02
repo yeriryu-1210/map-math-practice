@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MAP Math Practice</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px 20px;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    #question-box {
+      background: white;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 25px 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-bottom: 15px;
+    }
+    #choices button {
+      display: block;
+      width: 100%;
+      margin: 8px 0;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      cursor: pointer;
+      background-color: #f0f0f0;
+      transition: background-color 0.2s;
+    }
+    #choices button:hover {
+      background-color: #dbeeff;
+    }
+    #choices button.selected {
+      background-color: #a0c4ff;
+      border-color: #4a90e2;
+      color: #000;
+    }
+    #check-btn, #next-btn {
+      margin-top: 20px;
+      padding: 12px 24px;
+      font-size: 18px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #check-btn {
+      background-color: #4a90e2;
+      color: white;
+    }
+    #check-btn:disabled {
+      background-color: #a1c1f5;
+      cursor: not-allowed;
+    }
+    #next-btn {
+      background-color: #7dd181;
+      color: white;
+      display: none;
+    }
+    #feedback {
+      margin-top: 20px;
+      font-size: 20px;
+      min-height: 30px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="question-box">
+    <h2 id="question-number">Question 1</h2>
+    <p id="question-text">Loading...</p>
+    <div id="choices"></div>
+    <button id="check-btn" onclick="checkAnswer()" disabled>Check Answer</button>
+    <button id="next-btn" onclick="nextQuestion()">Next Question</button>
+    <p id="feedback"></p>
+  </div>
+
+<script>
+  const questions = [
+    { question: "What is 6 × (8 + 4)?", choices: ["72", "48", "56", "96"], answer: 0 },
+    { question: "Which number is a multiple of both 6 and 8?", choices: ["24", "32", "36", "48"], answer: 3 },
+    { question: "Which of the following fractions is equivalent to 3/6?", choices: ["1/2", "2/4", "4/8", "All of the above"], answer: 3 },
+    { question: "A rectangle has a length of 8 cm and a width of 3 cm. What is the area?", choices: ["11 cm²", "24 cm²", "22 cm²", "26 cm²"], answer: 1 },
+    { question: "Round 3,786 to the nearest hundred.", choices: ["3,700", "3,800", "3,790", "4,000"], answer: 1 },
+    { question: "What is 2/3 of 18?", choices: ["6", "9", "10", "12"], answer: 3 },
+    { question: "What is the value of the digit 4 in the number 64,382?", choices: ["4", "40", "400", "4,000"], answer: 3 },
+    { question: "What is the volume of a box that is 5 cm long, 3 cm wide, and 2 cm high?", choices: ["10 cm³", "15 cm³", "30 cm³", "35 cm³"], answer: 2 },
+    { question: "How many grams are in 4.5 kilograms?", choices: ["4,500 g", "450 g", "45 g", "400 g"], answer: 0 },
+    { question: "Which expression shows the distributive property?", choices: ["6 × (4 + 2) = 6 × 6", "6 × (4 + 2) = (6 × 4) + (6 × 2)", "6 + 4 = 10", "(6 + 4) × 2 = 20"], answer: 1 },
+    { question: "Lia baked 3 whole pies. She cut each pie into 6 equal slices. Her family ate 10 slices. What fraction of the pies is left?", choices: ["1/2", "4/6", "8/6", "8/3"], answer: 3 },
+    { question: "Look at the pattern: 3, 6, 12, 24, ___, ___. What are the next two numbers?", choices: ["48, 96", "36, 48", "30, 36", "48, 72"], answer: 0 },
+    { question: "Emma read 90 pages in 3 hours. At this rate, how many pages per hour did she read?", choices: ["27", "30", "33", "36"], answer: 1 },
+    { question: "A movie starts at 2:45 PM and ends at 5:10 PM. How long is the movie?", choices: ["2 hours 25 minutes", "2 hours 15 minutes", "2 hours 30 minutes", "3 hours"], answer: 0 },
+    { question: "A school has 12 classes. Each class has 24 students. Each student needs 3 notebooks. How many notebooks are needed in total?", choices: ["288", "720", "864", "936"], answer: 2 },
+    { question: "What is 15% of 200?", choices: ["25", "30", "35", "40"], answer: 1 },
+    { question: "Which number is prime?", choices: ["21", "29", "35", "39"], answer: 1 },
+    { question: "What is the next number in the sequence: 2, 4, 8, 16, ___?", choices: ["18", "20", "32", "24"], answer: 2 },
+    { question: "If you buy 3 pencils at 50 cents each, how much do you pay?", choices: ["$1.00", "$1.50", "$2.00", "$2.50"], answer: 1 },
+    { question: "How many sides does a hexagon have?", choices: ["5", "6", "7", "8"], answer: 1 },
+    { question: "What is the product of 7 and 9?", choices: ["54", "56", "63", "72"], answer: 2 },
+    { question: "Simplify: 24 ÷ 8 + 3 × 2", choices: ["12", "10", "9", "8"], answer: 1 },
+    { question: "What is the perimeter of a square with side length 5 cm?", choices: ["10 cm", "15 cm", "20 cm", "25 cm"], answer: 2 },
+    { question: "Which fraction is greater: 3/4 or 2/3?", choices: ["3/4", "2/3", "Equal", "Can't tell"], answer: 0 },
+    { question: "Convert 150 minutes to hours and minutes.", choices: ["2 hours 30 minutes", "1 hour 50 minutes", "3 hours 20 minutes", "2 hours"], answer: 0 },
+    { question: "If a pizza is cut into 8 slices and you eat 3, what fraction did you eat?", choices: ["3/8", "5/8", "1/3", "3/5"], answer: 0 },
+    { question: "What is 9 squared?", choices: ["18", "27", "81", "72"], answer: 2 },
+    { question: "Find the missing number: 5, 10, 15, ___, 25", choices: ["20", "18", "22", "24"], answer: 0 },
+    { question: "How many centimeters are in 2 meters?", choices: ["20", "200", "2,000", "2"], answer: 1 },
+    { question: "What is the decimal for 3/10?", choices: ["0.03", "0.3", "3.0", "0.33"], answer: 1 },
+    { question: "How many edges does a cube have?", choices: ["6", "8", "12", "24"], answer: 2 },
+    { question: "If you have $5 and spend $2.75, how much is left?", choices: ["$2.15", "$2.25", "$2.35", "$3.15"], answer: 1 },
+    { question: "What is 50% of 80?", choices: ["30", "40", "50", "60"], answer: 1 },
+    { question: "Simplify: 7 + (8 × 2)", choices: ["23", "30", "31", "24"], answer: 2 },
+    { question: "How many minutes are in 3 hours?", choices: ["180", "120", "90", "240"], answer: 0 },
+    { question: "What is 100 divided by 25?", choices: ["2", "3", "4", "5"], answer: 2 },
+    { question: "How many degrees are in a right angle?", choices: ["45°", "60°", "90°", "180°"], answer: 2 },
+    { question: "What is the largest two-digit number?", choices: ["98", "99", "100", "97"], answer: 1 },
+    { question: "What is 4 × 4 × 4?", choices: ["16", "32", "64", "48"], answer: 2 },
+    { question: "If a train travels 60 km in 1
